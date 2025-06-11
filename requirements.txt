@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+motor
+pydantic[email] # HttpUrl, EmailStr 등 사용 시 (여기서는 사용 안 함)
+python-dotenv
+# uuid는 표준 라이브러리이므로 명시적 추가 불필요
