@@ -30,20 +30,12 @@ class EventLogBase(BaseModel):
 
 
 class EventLogCreate(EventLogBase):
-    # API 요청으로 받을 때의 스키마
     pass
 
 class EventLogResponse(EventLogBase):
-    # event_id는 EventLogBase로부터 상속받음
-    # event_timestamp_str 필드 제거, EventLogBase의 event_timestamp (datetime)이 ISO 형식으로 직렬화됨
-
 
     class Config:
-        # orm_mode = True # Pydantic v1
         from_attributes = True # Pydantic v2
         json_encoders = {
-            # datetime 객체를 응답으로 보낼 경우 ISO 포맷으로 (여기서는 문자열 필드로 대체)
-            # datetime: lambda dt: dt.isoformat(),
             UUID4: lambda u: str(u)
         }
-        # MongoDB _id를 다른 필드명으로 매핑할 필요 없음 (event_id 사용)

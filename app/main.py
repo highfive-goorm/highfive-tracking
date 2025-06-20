@@ -1,5 +1,4 @@
 # tracking_service/app/main.py
-
 from fastapi import FastAPI, HTTPException, Body, status, Request
 import logging
 import os
@@ -7,14 +6,12 @@ from uuid import UUID
 from datetime import datetime, timezone # timezone 추가
 import json
 
-# from .database import connect_to_mongo, close_mongo_connection # 더 이상 사용하지 않으므로 제거
 from .schemas import EventLogCreate, EventLogResponse
-# from . import crud # crud 모듈 사용하지 않으므로 제거
 
 # --- 로거 설정 ---
 LOG_DIR_MAIN = os.path.join(os.getcwd(), "logs")
 os.makedirs(LOG_DIR_MAIN, exist_ok=True) # 로그 디렉토리 생성
-LOG_FILE_PATH = os.path.join(LOG_DIR_MAIN, "tracking_service_user_events_structured.log") # 파일 이름 변경 (선택적)
+LOG_FILE_PATH = os.path.join(LOG_DIR_MAIN, "tracking_user_actions.log") # 파일 이름 변경 (선택적)
 
 logger = logging.getLogger("tracking_service") # 서비스 로거
 logger.setLevel(logging.INFO)
@@ -40,7 +37,6 @@ structured_event_logger.propagate = False # 루트 로거로 이벤트 전파 �
 # 이벤트 데이터 로그 파일 핸들러 (JSON 라인 형식)
 # 포맷터 없이 메시지 자체를 JSON 문자열로 기록
 event_file_handler = logging.FileHandler(LOG_FILE_PATH, encoding='utf-8')
-# event_file_handler.setFormatter(None) # 메시지 그대로 기록 (아래에서 직접 JSON 문자열 만듦)
 structured_event_logger.addHandler(event_file_handler)
 
 
@@ -55,15 +51,10 @@ app = FastAPI(
 @app.on_event("startup")
 async def startup_event():
     logger.info("Tracking Service is starting up...") # 일반 운영 로그
-    # await connect_to_mongo() # DB 연결 제거
-    # logger.info("MongoDB connection established for Tracking Service.") # DB 연결 제거
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    logger.info("Tracking Service is shutting down...") # 일반 운영 로그
-    # await close_mongo_connection() # DB 연결 제거
-    # logger.info("MongoDB connection closed for Tracking Service.") # DB 연결 제거
-    
+    logger.info("Tracking Service is shutting down...") # 일반 운영 로그    
 
 @app.post(
     "/log/event",
